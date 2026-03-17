@@ -119,7 +119,7 @@ export default function InstallSection() {
         </div>
 
         <p style={{ textAlign: "center", marginTop: 24, fontSize: 13, color: "rgba(255,255,255,0.25)" }}>
-          Requires Python 3.11+ or Node.js 18+
+          Requires Python 3.10+ or Node.js 18+
         </p>
       </div>
     </section>

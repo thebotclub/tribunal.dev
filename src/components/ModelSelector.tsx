@@ -50,18 +50,18 @@ export default function ModelSelector() {
             <div style={{ color: "rgba(255,255,255,0.4)", fontSize: 12, marginBottom: 4 }}>Built-in Models</div>
             <div style={{ color: "rgba(255,255,255,0.2)", marginBottom: 12 }}>─────────────────────────────</div>
             <div style={{ display: "flex", justifyContent: "space-between", maxWidth: 420 }}>
-              <span style={{ color: "#e2e8f0" }}>claude-opus-4-5</span>
+              <span style={{ color: "#e2e8f0" }}>claude-opus-4-6</span>
               <span style={{ color: "rgba(255,255,255,0.35)", fontSize: 12 }}>Most capable</span>
             </div>
             <div style={{ display: "flex", justifyContent: "space-between", maxWidth: 420 }}>
               <span style={{ color: "#e2e8f0" }}>
-                claude-sonnet-4-5
+                claude-sonnet-4-6
                 <span style={{ marginLeft: 8, fontSize: 11, color: "#f59e0b", backgroundColor: "rgba(245,158,11,0.1)", padding: "1px 6px", borderRadius: 3 }}>← current</span>
               </span>
               <span style={{ color: "rgba(255,255,255,0.35)", fontSize: 12 }}>Balanced</span>
             </div>
             <div style={{ display: "flex", justifyContent: "space-between", maxWidth: 420 }}>
-              <span style={{ color: "#e2e8f0" }}>claude-haiku-3-5</span>
+              <span style={{ color: "#e2e8f0" }}>claude-haiku-4-5</span>
               <span style={{ color: "rgba(255,255,255,0.35)", fontSize: 12 }}>Fastest</span>
             </div>
             <br />
@@ -72,9 +72,9 @@ export default function ModelSelector() {
             <br />
             <div>
               <span style={{ color: "#f59e0b" }}>$</span>
-              <span style={{ color: "rgba(255,255,255,0.9)", marginLeft: 8 }}>tribunal model set claude-opus-4-5</span>
+              <span style={{ color: "rgba(255,255,255,0.9)", marginLeft: 8 }}>tribunal model set claude-opus-4-6</span>
             </div>
-            <div style={{ color: "#27c93f", marginTop: 4 }}>✓ Default model set to claude-opus-4-5</div>
+            <div style={{ color: "#27c93f", marginTop: 4 }}>✓ Default model set to claude-opus-4-6</div>
           </div>
         </div>
       </div>

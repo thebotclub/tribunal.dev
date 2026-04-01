@@ -39,3 +39,17 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# local reference (not part of the product)
+/claude-code
+
+# tribunal python package dev artifacts
+tribunal/.venv/
+tribunal/.pytest_cache/
+tribunal/__pycache__/
+tribunal/tests/__pycache__/
+tribunal/src/tribunal/__pycache__/
+tribunal/*.egg-info/
+tribunal/src/*.egg-info/
+**/__pycache__/
+*.pyc

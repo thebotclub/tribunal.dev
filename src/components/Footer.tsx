@@ -28,6 +28,7 @@ export default function Footer() {
             { label: "npm", href: "https://www.npmjs.com/package/tribunal" },
             { label: "PyPI", href: "https://pypi.org/project/tribunal/" },
             { label: "Docs", href: "https://github.com/thebotclub/tribunal/blob/main/README.md" },
+            { label: "Privacy", href: "https://github.com/thebotclub/tribunal/blob/main/PRIVACY.md" },
           ].map(link => (
             <Link
               key={link.label}

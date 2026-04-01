@@ -2,6 +2,7 @@ import Hero from "@/components/Hero";
 import Features from "@/components/Features";
 import HowItWorks from "@/components/HowItWorks";
 import ModelSelector from "@/components/ModelSelector";
+import PrivacySection from "@/components/PrivacySection";
 import InstallSection from "@/components/InstallSection";
 import Footer from "@/components/Footer";
 
@@ -12,6 +13,7 @@ export default function Home() {
       <Features />
       <HowItWorks />
       <ModelSelector />
+      <PrivacySection />
       <InstallSection />
       <Footer />
     </main>

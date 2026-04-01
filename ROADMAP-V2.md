@@ -2,7 +2,7 @@
 
 > Authored: April 2, 2026 · Based on architecture audit of Tribunal 0.7.0 + Claude Code v2.1.88 internals  
 > Scope: 6 months · 6 phases · 4 workstreams  
-> Status: **PLANNING — All V1 phases complete, V2 begins**
+> Status: **PHASES 5-8 COMPLETE — v1.1.0 shipped. 21 modules, 371 tests, full hook lifecycle + multi-agent governance.**
 
 ---
 

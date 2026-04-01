@@ -13,6 +13,10 @@ Commands:
   tribunal config       Show resolved configuration
   tribunal plugin       Plugin manifest management
   tribunal mcp-serve    Start MCP server
+  tribunal sync         Import/export rule bundles
+  tribunal managed      Show managed policy status
+  tribunal model        Model routing configuration
+  tribunal marketplace  Rule marketplace management
 """
 
 from __future__ import annotations
@@ -515,6 +519,119 @@ def cmd_plugin(args: argparse.Namespace) -> int:
         return 0
 
 
+# ── Sync Command ──────────────────────────────────────────────────────────────
+
+
+def cmd_sync(args: argparse.Namespace) -> int:
+    """Import or export rule bundles."""
+    from .sync import export_to_file, import_from_file
+
+    sub = getattr(args, "sync_command", None)
+
+    if sub == "export":
+        dest = getattr(args, "output", None) or ".tribunal/bundle.yaml"
+        name = getattr(args, "name", "") or ""
+        path = export_to_file(dest, str(Path.cwd()), name=name)
+        print(f"  ✓ Rules exported to {path}")
+        return 0
+    elif sub == "import":
+        source = getattr(args, "file", None)
+        if not source:
+            print("  ✗ Specify a file to import.")
+            return 1
+        merge = not getattr(args, "replace", False)
+        ok, messages = import_from_file(source, str(Path.cwd()), merge=merge)
+        for msg in messages:
+            print(f"  {'✓' if ok else '✗'} {msg}")
+        return 0 if ok else 1
+    else:
+        print("  Usage: tribunal sync export|import")
+        return 0
+
+
+# ── Managed Command ───────────────────────────────────────────────────────────
+
+
+def cmd_managed(args: argparse.Namespace) -> int:
+    """Show managed policy status."""
+    from .managed import format_managed_status, load_managed_policy
+
+    policy = load_managed_policy()
+    print(format_managed_status(policy))
+    return 0
+
+
+# ── Model Command ─────────────────────────────────────────────────────────────
+
+
+def cmd_model(args: argparse.Namespace) -> int:
+    """Model routing configuration."""
+    from .routing import format_model_config, load_model_config
+
+    sub = getattr(args, "model_command", None)
+
+    if sub == "resolve":
+        tool = getattr(args, "tool", "") or ""
+        config = load_model_config(str(Path.cwd()))
+        model = config.resolve_model(tool_name=tool)
+        print(f"  Model: {model}")
+        return 0
+    else:
+        config = load_model_config(str(Path.cwd()))
+        print(format_model_config(config))
+        return 0
+
+
+# ── Marketplace Command ──────────────────────────────────────────────────────
+
+
+def cmd_marketplace(args: argparse.Namespace) -> int:
+    """Rule marketplace management."""
+    from .marketplace import (
+        format_marketplace,
+        install_from_marketplace,
+        list_marketplace,
+        register_bundle,
+        unregister_bundle,
+    )
+
+    sub = getattr(args, "market_command", None)
+
+    if sub == "list":
+        entries = list_marketplace()
+        print(format_marketplace(entries))
+        return 0
+    elif sub == "register":
+        bundle_file = getattr(args, "file", None)
+        if not bundle_file:
+            print("  ✗ Specify a bundle file to register.")
+            return 1
+        ok, msg = register_bundle(bundle_file)
+        print(f"  {'✓' if ok else '✗'} {msg}")
+        return 0 if ok else 1
+    elif sub == "install":
+        name = getattr(args, "name", None)
+        if not name:
+            print("  ✗ Specify a bundle name to install.")
+            return 1
+        ok, messages = install_from_marketplace(name, str(Path.cwd()))
+        for msg in messages:
+            print(f"  {'✓' if ok else '✗'} {msg}")
+        return 0 if ok else 1
+    elif sub == "remove":
+        name = getattr(args, "name", None)
+        if not name:
+            print("  ✗ Specify a bundle name to remove.")
+            return 1
+        ok, msg = unregister_bundle(name)
+        print(f"  {'✓' if ok else '✗'} {msg}")
+        return 0 if ok else 1
+    else:
+        entries = list_marketplace()
+        print(format_marketplace(entries))
+        return 0
+
+
 # ── Main ──────────────────────────────────────────────────────────────────────
 
 
@@ -590,6 +707,37 @@ def main() -> None:
     # mcp-serve
     sub.add_parser("mcp-serve", help="Start MCP server (stdin/stdout)")
 
+    # sync (import/export)
+    sync_p = sub.add_parser("sync", help="Import/export rule bundles")
+    sync_sub = sync_p.add_subparsers(dest="sync_command")
+    export_p = sync_sub.add_parser("export", help="Export rules to a YAML bundle")
+    export_p.add_argument("--output", "-o", default=".tribunal/bundle.yaml", help="Output file")
+    export_p.add_argument("--name", default="", help="Bundle name")
+    import_p = sync_sub.add_parser("import", help="Import rules from a YAML bundle")
+    import_p.add_argument("file", help="YAML bundle file to import")
+    import_p.add_argument("--replace", action="store_true", help="Replace rules instead of merging")
+
+    # managed
+    sub.add_parser("managed", help="Show managed policy status")
+
+    # model routing
+    model_p = sub.add_parser("model", help="Model routing configuration")
+    model_sub = model_p.add_subparsers(dest="model_command")
+    model_sub.add_parser("show", help="Show model routing config")
+    resolve_p = model_sub.add_parser("resolve", help="Resolve model for a tool")
+    resolve_p.add_argument("tool", help="Tool name to resolve model for")
+
+    # marketplace
+    market_p = sub.add_parser("marketplace", help="Rule marketplace")
+    market_sub = market_p.add_subparsers(dest="market_command")
+    market_sub.add_parser("list", help="List marketplace bundles")
+    reg_p = market_sub.add_parser("register", help="Register a bundle in marketplace")
+    reg_p.add_argument("file", help="Bundle YAML file to register")
+    inst_p = market_sub.add_parser("install", help="Install a bundle from marketplace")
+    inst_p.add_argument("name", help="Bundle name to install")
+    rem_p = market_sub.add_parser("remove", help="Remove a bundle from marketplace")
+    rem_p.add_argument("name", help="Bundle name to remove")
+
     args = parser.parse_args()
 
     commands = {
@@ -604,6 +752,10 @@ def main() -> None:
         "report": cmd_report,
         "config": cmd_config,
         "plugin": cmd_plugin,
+        "sync": cmd_sync,
+        "managed": cmd_managed,
+        "model": cmd_model,
+        "marketplace": cmd_marketplace,
     }
 
     if args.command == "mcp-serve":

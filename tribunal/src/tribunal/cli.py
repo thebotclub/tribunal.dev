@@ -1,10 +1,18 @@
 """Tribunal CLI — main entry point.
 
 Commands:
-  tribunal init       Set up hooks in the current project
-  tribunal status     Show current rules and audit summary
-  tribunal rules      List active rules
-  tribunal audit      Show recent audit log entries
+  tribunal init         Set up hooks in the current project
+  tribunal status       Show current rules and audit summary
+  tribunal rules        List active rules
+  tribunal audit        Show recent audit log entries
+  tribunal cost         Cost tracking and budget management
+  tribunal skills       Manage Tribunal skills
+  tribunal permissions  Manage permission policies
+  tribunal review       Run review agents on changed files
+  tribunal report       Generate CI/CD-friendly report
+  tribunal config       Show resolved configuration
+  tribunal plugin       Plugin manifest management
+  tribunal mcp-serve    Start MCP server
 """
 
 from __future__ import annotations
@@ -416,6 +424,97 @@ def cmd_permissions(args: argparse.Namespace) -> int:
         return cmd_permissions(argparse.Namespace(perm_command="show"))
 
 
+# ── Review Commands ───────────────────────────────────────────────────────────
+
+
+def cmd_review(args: argparse.Namespace) -> int:
+    """Run review agents on changed files."""
+    from .review import run_review
+
+    agents = args.agents.split(",") if hasattr(args, "agents") and args.agents else None
+    files = args.files if hasattr(args, "files") and args.files else None
+
+    report = run_review(cwd=str(Path.cwd()), agents=agents, files=files)
+    print(report.format())
+
+    if hasattr(args, "json_output") and args.json_output:
+        print(json.dumps(report.to_dict(), indent=2))
+
+    return 0 if report.passed else 1
+
+
+# ── Report Command ────────────────────────────────────────────────────────────
+
+
+def cmd_report(args: argparse.Namespace) -> int:
+    """Generate a CI/CD-friendly report (JSON or text)."""
+    from .review import run_review
+    from .cost import get_cost_snapshot, get_budget
+
+    cwd = str(Path.cwd())
+    report = run_review(cwd=cwd)
+    snapshot = get_cost_snapshot(cwd)
+    budget = get_budget(cwd)
+
+    output_format = getattr(args, "format", "text")
+
+    if output_format == "json":
+        result = {
+            "review": report.to_dict(),
+            "cost": {
+                "session_usd": snapshot.session_cost_usd,
+                "daily_usd": snapshot.daily_cost_usd,
+                "budget_session_usd": budget.session_usd,
+                "budget_daily_usd": budget.daily_usd,
+            },
+            "passed": report.passed,
+        }
+        print(json.dumps(result, indent=2))
+    else:
+        print(report.format())
+        if snapshot.session_cost_usd > 0:
+            print(f"  💰 Session cost: ${snapshot.session_cost_usd:.4f}")
+            if budget.session_usd > 0:
+                pct = snapshot.session_cost_usd / budget.session_usd * 100
+                print(f"     Budget: ${budget.session_usd:.2f} ({pct:.0f}% used)")
+        print()
+
+    return 0 if report.passed else 1
+
+
+# ── Config Command ────────────────────────────────────────────────────────────
+
+
+def cmd_config(args: argparse.Namespace) -> int:
+    """Show resolved Tribunal configuration."""
+    from .config import format_config, resolve_config
+
+    config = resolve_config(str(Path.cwd()))
+    print(format_config(config))
+    return 0
+
+
+# ── Plugin Command ────────────────────────────────────────────────────────────
+
+
+def cmd_plugin(args: argparse.Namespace) -> int:
+    """Plugin manifest management."""
+    from .plugin import generate_manifest, install_plugin_manifest
+
+    sub = getattr(args, "plugin_command", None)
+
+    if sub == "install":
+        dest = install_plugin_manifest(str(Path.cwd()))
+        print(f"  ✓ Plugin manifest written to {dest}")
+        return 0
+    elif sub == "show":
+        print(generate_manifest())
+        return 0
+    else:
+        print(generate_manifest())
+        return 0
+
+
 # ── Main ──────────────────────────────────────────────────────────────────────
 
 
@@ -469,6 +568,28 @@ def main() -> None:
     apply_p = perm_sub.add_parser("apply", help="Apply a permission preset")
     apply_p.add_argument("preset", help="Preset name: strict, standard, or minimal")
 
+    # review
+    review_p = sub.add_parser("review", help="Run review agents on changed files")
+    review_p.add_argument("--agents", help="Comma-separated list of agents to run")
+    review_p.add_argument("--json", dest="json_output", action="store_true", help="Output JSON")
+    review_p.add_argument("files", nargs="*", default=None, help="Files to review")
+
+    # report (CI/CD)
+    report_p = sub.add_parser("report", help="Generate CI/CD report")
+    report_p.add_argument("--format", choices=["text", "json"], default="text", help="Output format")
+
+    # config
+    sub.add_parser("config", help="Show resolved configuration")
+
+    # plugin
+    plugin_p = sub.add_parser("plugin", help="Plugin manifest management")
+    plugin_sub = plugin_p.add_subparsers(dest="plugin_command")
+    plugin_sub.add_parser("show", help="Show plugin manifest")
+    plugin_sub.add_parser("install", help="Write plugin manifest to .tribunal/")
+
+    # mcp-serve
+    sub.add_parser("mcp-serve", help="Start MCP server (stdin/stdout)")
+
     args = parser.parse_args()
 
     commands = {
@@ -479,7 +600,16 @@ def main() -> None:
         "cost": cmd_cost,
         "skills": cmd_skills,
         "permissions": cmd_permissions,
+        "review": cmd_review,
+        "report": cmd_report,
+        "config": cmd_config,
+        "plugin": cmd_plugin,
     }
+
+    if args.command == "mcp-serve":
+        from .mcp_server import main as mcp_main
+        mcp_main()
+        return
 
     handler = commands.get(args.command)
     if handler:

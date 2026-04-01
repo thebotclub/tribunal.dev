@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "tribunal"
-version = "0.4.0"
+version = "0.5.0"
 description = "Enterprise-grade discipline for Claude Code — TDD enforcement, quality gates, and team standards."
 readme = "README.md"
 license = "MIT"
@@ -34,6 +34,7 @@ Documentation = "https://github.com/thebotclub/tribunal/blob/main/README.md"
 [project.scripts]
 tribunal = "tribunal.cli:main"
 tribunal-gate = "tribunal.gate:main"
+tribunal-mcp = "tribunal.mcp_server:main"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/tribunal"]

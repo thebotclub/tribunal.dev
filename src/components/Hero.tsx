@@ -1,7 +1,7 @@
 "use client";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 
-function CopyButton({ text, label }: { text: string; label: string }) {
+function CopyButton({ text }: { text: string }) {
   const [copied, setCopied] = useState(false);
 
   const copy = async () => {
@@ -154,8 +154,8 @@ export default function Hero() {
         </p>
 
         <div style={{ display: "flex", flexWrap: "wrap", gap: 12, justifyContent: "center" }}>
-          <CopyButton text="pip install tribunal" label="pip" />
-          <CopyButton text="npm install tribunal" label="npm" />
+          <CopyButton text="pip install tribunal" />
+          <CopyButton text="npm install tribunal" />
         </div>
 
         <p style={{ marginTop: 24, fontSize: 13, color: "rgba(255,255,255,0.25)" }}>

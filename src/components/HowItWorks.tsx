@@ -5,7 +5,7 @@ const steps = [
     number: "01",
     title: "Install",
     desc: "Drop tribunal into your project in seconds.",
-    code: "pip install tribunal && tribunal",
+    code: "pip install tribunal && tribunal init",
   },
   {
     number: "02",

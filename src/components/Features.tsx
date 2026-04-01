@@ -4,32 +4,32 @@ const features = [
   {
     icon: "🧪",
     title: "TDD Enforced",
-    body: "Python files are blocked from writing production code without a failing test first. No exceptions.",
+    body: "Blocks production code without a failing test first. Supports Python and TypeScript out of the box.",
   },
   {
     icon: "🛡️",
     title: "Quality Gates",
-    body: "Every file write runs secret detection, static analysis, and type checking before Claude can continue.",
+    body: "Every file write runs secret detection, type checking, and linting. Custom shell commands as gates.",
   },
   {
     icon: "📋",
-    title: "Spec Workflow",
-    body: "Full plan → verify → implement → review cycle with 4 parallel AI agents reviewing your code.",
+    title: "Review Agents",
+    body: "4 parallel review agents — TDD, security, quality, spec — analyze every change before it ships.",
   },
   {
-    icon: "🔀",
-    title: "Model Agnostic",
-    body: "Use Claude Opus, Sonnet, Haiku, MiniMax, GLM, or any custom model. Switch with one command.",
+    icon: "💰",
+    title: "Cost Governance",
+    body: "Per-session and daily budgets, cost analytics with trend detection, anomaly alerts, and model routing.",
   },
   {
-    icon: "🏛️",
-    title: "Vault of Rules",
-    body: "35+ enterprise rules, 30 locale modes, 4 review agents. All configurable and extensible.",
+    icon: "🧠",
+    title: "Memory & MCP",
+    body: "Inject rules into Claude's memory system. MCP server exposes 6 tools for multi-agent workflows.",
   },
   {
     icon: "🏢",
     title: "Enterprise Ready",
-    body: "Audit logging, GPG-signed releases, headless CI install, air-gapped bundles, fleet deployment.",
+    body: "Managed fleet policies, air-gapped bundles, audit dashboards, rule marketplace, and team sync.",
   },
 ];
 

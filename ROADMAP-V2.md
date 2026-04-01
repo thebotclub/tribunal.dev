@@ -172,11 +172,11 @@ except Exception as e:
 ```
 
 **Tasks:**
-- [ ] Change gate.py default to fail-closed (exit 2 on error)
-- [ ] Add `TRIBUNAL_FAIL_MODE` env var (values: `closed`, `open`) for enterprise override
-- [ ] Add specific exception handling: `json.JSONDecodeError`, `KeyError`, `FileNotFoundError`
-- [ ] Log all errors to audit trail before exiting
-- [ ] Write tests for every error path
+- [x] Change gate.py default to fail-closed (exit 2 on error)
+- [x] Add `TRIBUNAL_FAIL_MODE` env var (values: `closed`, `open`) for enterprise override
+- [x] Add specific exception handling: `json.JSONDecodeError`, `KeyError`, `FileNotFoundError`
+- [x] Log all errors to audit trail before exiting
+- [x] Write tests for every error path
 
 #### 5.2 — Atomic State Writes + File Locking (P0)
 
@@ -206,10 +206,10 @@ def atomic_write_json(path: Path, data: dict) -> None:
 ```
 
 **Tasks:**
-- [ ] Create `tribunal/io.py` with `atomic_write_json()` and `locked_read_json()`
-- [ ] Migrate `cost.py`, `config.py`, `marketplace.py` to use atomic writes
-- [ ] Add Windows support via `msvcrt.locking()` fallback
-- [ ] Write concurrent write test with threading
+- [x] Create `tribunal/io.py` with `atomic_write_json()` and `locked_read_json()`
+- [x] Migrate `cost.py`, `config.py`, `marketplace.py` to use atomic writes
+- [x] Add Windows support via `msvcrt.locking()` fallback
+- [x] Write concurrent write test with threading
 
 #### 5.3 — Audit Log Rotation (P1)
 
@@ -227,11 +227,11 @@ def rotate_audit_log(audit_path: Path, max_bytes: int = 10_000_000, keep: int = 
 ```
 
 **Tasks:**
-- [ ] Add `rotate_audit_log()` to `audit.py`
-- [ ] Call rotation check in `log_event()` before writing
-- [ ] Make max size and retention count configurable in `config.yaml`
+- [x] Add `rotate_audit_log()` to `audit.py`
+- [x] Call rotation check in `log_event()` before writing
+- [x] Make max size and retention count configurable in `config.yaml`
 - [ ] Add `tribunal audit rotate` CLI command for manual rotation
-- [ ] Add `tribunal audit stats` showing log size and entry count
+- [x] Add `tribunal audit stats` showing log size and entry count
 
 #### 5.4 — Config Schema Validation (P1)
 
@@ -260,20 +260,20 @@ def validate_config(config: dict) -> list[str]:
 ```
 
 **Tasks:**
-- [ ] Add `validate_config()` to `config.py`
-- [ ] Validate on load — log warnings for unknown keys, error for invalid types
+- [x] Add `validate_config()` to `config.py`
+- [x] Validate on load — log warnings for unknown keys, error for invalid types
 - [ ] Add `tribunal config validate` CLI command
 - [ ] Create JSON Schema file for editor autocompletion
-- [ ] Test with malformed YAML, missing required fields, wrong types
+- [x] Test with malformed YAML, missing required fields, wrong types
 
 #### 5.5 — Memory Limit Enforcement (P1)
 
 **Tasks:**
-- [ ] Add file count check before writing (cap at 200)
-- [ ] Add file size check before writing (cap at 25KB)
-- [ ] Implement LRU eviction when at capacity (oldest Tribunal memory removed)
+- [x] Add file count check before writing (cap at 200)
+- [x] Add file size check before writing (cap at 25KB)
+- [x] Implement LRU eviction when at capacity (oldest Tribunal memory removed)
 - [ ] Add `tribunal memory stats` showing count/size/capacity
-- [ ] Test boundary conditions (199, 200, 201 files; 24KB, 25KB, 26KB)
+- [x] Test boundary conditions (199, 200, 201 files; 24KB, 25KB, 26KB)
 
 #### 5.6 — Missing Tool Detection (P1)
 
@@ -294,7 +294,7 @@ except FileNotFoundError:
 
 **Tasks:**
 - [ ] Add `require_tool: true/false` field to rule schema (default: false)
-- [ ] Emit warning to stderr when tools are missing
+- [x] Emit warning to stderr when tools are missing
 - [ ] Log missing tool warnings to audit trail
 - [ ] Add `tribunal doctor` command that checks all rule dependencies are installed
 
@@ -312,11 +312,11 @@ except FileNotFoundError:
 | `cli.py` | Subcommand dispatch, argument parsing, error messages |
 
 **Tasks:**
-- [ ] Write tests for every untested module (target: 400+ total tests)
-- [ ] Add negative path tests (malformed input, missing files, permission errors)
-- [ ] Add concurrent write tests for state.json
-- [ ] Add integration test: full hook flow (stdin → gate → rules → audit → stdout)
-- [ ] Add CI fixture for config cascade resolution
+- [x] Write tests for every untested module (target: 400+ total tests)
+- [x] Add negative path tests (malformed input, missing files, permission errors)
+- [x] Add concurrent write tests for state.json
+- [x] Add integration test: full hook flow (stdin → gate → rules → audit → stdout)
+- [x] Add CI fixture for config cascade resolution
 
 #### 5.8 — Type Annotations (P2)
 
@@ -324,7 +324,7 @@ except FileNotFoundError:
 - [ ] Add TypedDict definitions for config structures
 - [ ] Add return type annotations to all public functions
 - [ ] Add mypy to CI with `--strict` mode
-- [ ] Create `py.typed` marker for PEP 561 compliance
+- [x] Create `py.typed` marker for PEP 561 compliance
 
 **Phase 5 Exit Criteria:**
 - ✅ gate.py fails closed on errors
@@ -349,9 +349,9 @@ except FileNotFoundError:
 **Tasks:**
 - [ ] Reserve `tribunal` name on PyPI (or choose `tribunal-ai` if taken)
 - [ ] Create PyPI API token, store as GitHub secret `PYPI_API_TOKEN`
-- [ ] Configure `pyproject.toml` with classifiers, URLs, license metadata
+- [x] Configure `pyproject.toml` with classifiers, URLs, license metadata
 - [ ] Test build: `python -m build && twine check dist/*`
-- [ ] Publish v1.0.0 (bump from 0.7.0 — V2 harden phase makes it prod-ready)
+- [x] Publish v1.0.0 (bump from 0.7.0 — V2 harden phase makes it prod-ready)
 
 #### 6.2 — GitHub Actions CI/CD (P0)
 
@@ -402,10 +402,10 @@ jobs:
 ```
 
 **Tasks:**
-- [ ] Create `.github/workflows/ci.yml` (test matrix: 4 Python versions × 3 OS)
-- [ ] Create `.github/workflows/publish.yml` (triggered on version tags)
-- [ ] Add `[project.optional-dependencies] dev = ["pytest", "mypy", "ruff"]`
-- [ ] Configure PyPI trusted publishing (no API key needed)
+- [x] Create `.github/workflows/ci.yml` (test matrix: 4 Python versions × 3 OS)
+- [x] Create `.github/workflows/publish.yml` (triggered on version tags)
+- [x] Add `[project.optional-dependencies] dev = ["pytest", "mypy", "ruff"]`
+- [x] Configure PyPI trusted publishing (no API key needed)
 - [ ] Add CI badge to README.md
 
 #### 6.3 — Website Build CI (P1)
@@ -429,7 +429,7 @@ jobs:
 ```
 
 **Tasks:**
-- [ ] Create website CI workflow
+- [x] Create website CI workflow
 - [ ] Add Cloudflare Pages deployment (via Wrangler action or Cloudflare GitHub integration)
 - [ ] Add Lighthouse CI for performance regression detection
 
@@ -480,12 +480,12 @@ jobs:
 | `ConfigChange` | Settings modified | Detect tampering — alert if hooks/permissions changed mid-session |
 
 **Tasks:**
-- [ ] Update `tribunal init` to register all lifecycle hooks in `claudeconfig.json`
-- [ ] Add `SessionEnd` handler: flush pending analytics, write session summary
-- [ ] Add `PostToolUseFailure` handler: track failure rates per tool
-- [ ] Add `FileChanged` handler: run rules on external file changes
-- [ ] Add `CwdChanged` handler: reload rules for new project context
-- [ ] Add `ConfigChange` handler: alert on unauthorized config modifications
+- [x] Update `tribunal init` to register all lifecycle hooks in `claudeconfig.json`
+- [x] Add `SessionEnd` handler: flush pending analytics, write session summary
+- [x] Add `PostToolUseFailure` handler: track failure rates per tool
+- [x] Add `FileChanged` handler: run rules on external file changes
+- [x] Add `CwdChanged` handler: reload rules for new project context
+- [x] Add `ConfigChange` handler: alert on unauthorized config modifications
 - [ ] Update protocol.py to handle new event types
 
 #### 7.2 — Permission Audit Trail (P1)
@@ -496,7 +496,7 @@ jobs:
 | `PermissionDenied` | Permission was denied | Track denied actions for compliance reporting |
 
 **Tasks:**
-- [ ] Add permission event logging to audit trail
+- [x] Add permission event logging to audit trail
 - [ ] Create `tribunal audit permissions` command showing permission history
 - [ ] Add permission escalation detection (deny → subsequent allow = escalation)
 - [ ] Generate compliance report: "Actions requested vs. actions allowed"
@@ -509,8 +509,8 @@ jobs:
 | `PostCompact` | Context was compacted | Re-inject essential rules after context loss |
 
 **Tasks:**
-- [ ] Add compact handlers that persist Tribunal state across context compactions
-- [ ] Re-inject active rules and budget status after compaction
+- [x] Add compact handlers that persist Tribunal state across context compactions
+- [x] Re-inject active rules and budget status after compaction
 - [ ] Track compaction frequency for session complexity analytics
 
 **Phase 7 Exit Criteria:**
@@ -548,11 +548,11 @@ COORDINATOR SESSION
 ```
 
 **Tasks:**
-- [ ] Handle `SubagentStart` / `SubagentStop` hooks
-- [ ] Handle `TaskCreated` / `TaskCompleted` hooks
+- [x] Handle `SubagentStart` / `SubagentStop` hooks
+- [x] Handle `TaskCreated` / `TaskCompleted` hooks
 - [ ] Create per-agent audit trails (separate JSONL per task ID)
-- [ ] Track cost per sub-agent with shared session budget
-- [ ] Add `tribunal status --agents` showing all active sub-agents and their costs
+- [x] Track cost per sub-agent with shared session budget
+- [x] Add `tribunal status --agents` showing all active sub-agents and their costs
 
 #### 8.2 — Cross-Agent Policy Enforcement (P0)
 
@@ -572,11 +572,11 @@ multi_agent:
 ```
 
 **Tasks:**
-- [ ] Add `multi_agent` section to config schema
-- [ ] Implement per-agent budget tracking with shared pool
+- [x] Add `multi_agent` section to config schema
+- [x] Implement per-agent budget tracking with shared pool
 - [ ] Implement task-description-based permission matching
-- [ ] Add `max_concurrent_agents` enforcement
-- [ ] Create `tribunal agents` command showing agent tree with costs
+- [x] Add `max_concurrent_agents` enforcement
+- [x] Create `tribunal agents` command showing agent tree with costs
 
 #### 8.3 — Task-Level Analytics (P1)
 

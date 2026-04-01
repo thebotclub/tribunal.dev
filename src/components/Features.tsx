@@ -8,13 +8,18 @@ const features = [
   },
   {
     icon: "🛡️",
-    title: "Quality Gates",
-    body: "Every file write runs secret detection, type checking, and linting. Custom shell commands as gates.",
+    title: "Fail-Closed Safety Gate",
+    body: "Blocks on errors by default — never fails open silently. Atomic I/O with file locking prevents concurrent session corruption.",
   },
   {
-    icon: "📋",
-    title: "Review Agents",
-    body: "4 parallel review agents — TDD, security, quality, spec — analyze every change before it ships.",
+    icon: "🔗",
+    title: "Hook Lifecycle",
+    body: "13 lifecycle handlers — sessions, tool failures, file changes, permissions, context compaction, config tampering, and more.",
+  },
+  {
+    icon: "🤖",
+    title: "Multi-Agent Governance",
+    body: "Per-agent budgets, max concurrency limits, shared session budgets. Full sub-agent lifecycle tracking with agent tree view.",
   },
   {
     icon: "💰",
@@ -22,14 +27,19 @@ const features = [
     body: "Per-session and daily budgets, cost analytics with trend detection, anomaly alerts, and model routing.",
   },
   {
+    icon: "📋",
+    title: "Review Agents & Audit",
+    body: "4 parallel review agents. Full audit trail with automatic 10 MB log rotation, HTML dashboards, and compliance reports.",
+  },
+  {
     icon: "🧠",
     title: "Memory & MCP",
-    body: "Inject rules into Claude's memory system. MCP server exposes 6 tools for multi-agent workflows.",
+    body: "Inject rules into Claude's memory with 200-file limit and LRU eviction. MCP server exposes 6 tools for multi-agent workflows.",
   },
   {
     icon: "🏢",
     title: "Enterprise Ready",
-    body: "Managed fleet policies, air-gapped bundles, audit dashboards, rule marketplace, and team sync.",
+    body: "Managed fleet policies, air-gapped bundles, config schema validation, rule marketplace, and team sync.",
   },
 ];
 
@@ -47,7 +57,7 @@ export default function Features() {
 
       <div style={{
         display: "grid",
-        gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
+        gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
         gap: 1,
         border: "1px solid rgba(255,255,255,0.07)",
         borderRadius: 12,
@@ -59,8 +69,8 @@ export default function Features() {
             style={{
               padding: "32px",
               backgroundColor: "rgba(255,255,255,0.02)",
-              borderRight: (i + 1) % 3 !== 0 ? "1px solid rgba(255,255,255,0.07)" : "none",
-              borderBottom: i < 3 ? "1px solid rgba(255,255,255,0.07)" : "none",
+              borderRight: (i + 1) % 4 !== 0 ? "1px solid rgba(255,255,255,0.07)" : "none",
+              borderBottom: i < 4 ? "1px solid rgba(255,255,255,0.07)" : "none",
               transition: "background-color 0.2s",
             }}
             onMouseEnter={e => (e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.04)")}

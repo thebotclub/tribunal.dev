@@ -184,7 +184,11 @@ class RuleEngine:
 
 
 def _check_condition(rule: Rule, event: HookEvent) -> tuple[bool, str]:
-    """Check a rule's built-in condition. Returns (triggered, message)."""
+    """Check a rule's built-in condition or run command. Returns (triggered, message)."""
+    # If rule has a `run` command and action is block-on-failure, run the command
+    if rule.run and not rule.condition:
+        return _condition_run_command(rule, event)
+
     cond = rule.condition
     if not cond:
         return True, ""
@@ -278,23 +282,47 @@ def _condition_contains_secret(rule: Rule, event: HookEvent) -> tuple[bool, str]
 
 
 def _condition_cost_exceeded(rule: Rule, event: HookEvent) -> tuple[bool, str]:
-    """Check if session cost exceeds budget (reads from .tribunal/state.json)."""
-    cwd = event.cwd
-    state_path = os.path.join(cwd, ".tribunal", "state.json")
-    if not os.path.exists(state_path):
+    """Check if session cost exceeds budget (uses the cost module)."""
+    from .cost import check_budget
+
+    result = check_budget(event.cwd)
+    if result.exceeded:
+        return True, result.message
+    if result.warning:
+        # For warn-level rules, still trigger to inject the warning message
+        return True, result.message
+    return False, ""
+
+
+def _condition_run_command(rule: Rule, event: HookEvent) -> tuple[bool, str]:
+    """Run a shell command and block on non-zero exit. Uses rule.run field."""
+    if not rule.run:
         return False, ""
 
-    import json
-    with open(state_path) as f:
-        state = json.load(f)
+    import subprocess
 
-    session_cost = state.get("session_cost_usd", 0.0)
-    budget = state.get("cost_budget_usd", 0.0)
-
-    if budget > 0 and session_cost > budget:
-        return True, f"Session cost ${session_cost:.2f} exceeds budget ${budget:.2f}."
-
-    return False, ""
+    try:
+        result = subprocess.run(
+            rule.run,
+            shell=True,
+            cwd=event.cwd,
+            capture_output=True,
+            text=True,
+            timeout=30,
+        )
+        if result.returncode == 127:
+            return False, ""  # Command not found — skip gracefully
+        if result.returncode != 0:
+            output = (result.stdout + result.stderr).strip()
+            # Truncate long output
+            if len(output) > 500:
+                output = output[:500] + "\n... (truncated)"
+            return True, f"Command failed (exit {result.returncode}):\n{output}" if output else f"Command failed (exit {result.returncode})"
+        return False, ""
+    except subprocess.TimeoutExpired:
+        return True, f"Command timed out after 30s: {rule.run}"
+    except FileNotFoundError:
+        return False, ""  # Command not installed — skip gracefully
 
 
 def _condition_no_matching_test_ts(rule: Rule, event: HookEvent) -> tuple[bool, str]:
@@ -338,12 +366,104 @@ def _condition_no_matching_test_ts(rule: Rule, event: HookEvent) -> tuple[bool, 
     return True, f"No test file found for {file_path}. Write tests first (e.g. {module_name}.test.{ext})."
 
 
+def _condition_type_check(rule: Rule, event: HookEvent) -> tuple[bool, str]:
+    """Run TypeScript type checking after file changes."""
+    file_path = _extract_path(event)
+    if not file_path:
+        return False, ""
+    if not (file_path.endswith(".ts") or file_path.endswith(".tsx")):
+        return False, ""
+
+    import subprocess
+    try:
+        result = subprocess.run(
+            ["npx", "tsc", "--noEmit", "--pretty"],
+            cwd=event.cwd,
+            capture_output=True,
+            text=True,
+            timeout=60,
+        )
+        if result.returncode != 0:
+            output = result.stdout.strip()
+            if len(output) > 500:
+                output = output[:500] + "\n... (truncated)"
+            return True, f"TypeScript errors:\n{output}"
+        return False, ""
+    except (subprocess.TimeoutExpired, FileNotFoundError):
+        return False, ""
+
+
+def _condition_lint_check(rule: Rule, event: HookEvent) -> tuple[bool, str]:
+    """Run project linter after file changes."""
+    file_path = _extract_path(event)
+    if not file_path:
+        return False, ""
+
+    import subprocess
+
+    # Try eslint for JS/TS, ruff for Python
+    if file_path.endswith((".ts", ".tsx", ".js", ".jsx")):
+        cmd = ["npx", "eslint", "--no-warn-ignored", file_path]
+    elif file_path.endswith(".py"):
+        cmd = ["ruff", "check", file_path]
+    else:
+        return False, ""
+
+    try:
+        result = subprocess.run(
+            cmd,
+            cwd=event.cwd,
+            capture_output=True,
+            text=True,
+            timeout=30,
+        )
+        if result.returncode != 0:
+            output = (result.stdout + result.stderr).strip()
+            if len(output) > 500:
+                output = output[:500] + "\n... (truncated)"
+            return True, f"Lint errors:\n{output}"
+        return False, ""
+    except (subprocess.TimeoutExpired, FileNotFoundError):
+        return False, ""
+
+
+def _condition_mypy_check(rule: Rule, event: HookEvent) -> tuple[bool, str]:
+    """Run mypy type checking after Python file changes."""
+    file_path = _extract_path(event)
+    if not file_path:
+        return False, ""
+    if not file_path.endswith(".py"):
+        return False, ""
+
+    import subprocess
+    try:
+        result = subprocess.run(
+            ["mypy", "--no-error-summary", file_path],
+            cwd=event.cwd,
+            capture_output=True,
+            text=True,
+            timeout=60,
+        )
+        if result.returncode != 0:
+            output = result.stdout.strip()
+            if len(output) > 500:
+                output = output[:500] + "\n... (truncated)"
+            return True, f"mypy errors:\n{output}"
+        return False, ""
+    except (subprocess.TimeoutExpired, FileNotFoundError):
+        return False, ""
+
+
 # Condition registry
 _CONDITIONS: dict[str, Any] = {
     "no-matching-test": _condition_no_matching_test,
     "no-matching-test-ts": _condition_no_matching_test_ts,
     "contains-secret": _condition_contains_secret,
     "cost-exceeded": _condition_cost_exceeded,
+    "type-check": _condition_type_check,
+    "lint-check": _condition_lint_check,
+    "mypy-check": _condition_mypy_check,
+    "run-command": _condition_run_command,
 }
 
 

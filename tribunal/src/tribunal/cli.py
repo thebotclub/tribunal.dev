@@ -295,6 +295,127 @@ def cmd_audit(args: argparse.Namespace) -> int:
     return 0
 
 
+# ── Cost Commands ─────────────────────────────────────────────────────────────
+
+
+def cmd_cost(args: argparse.Namespace) -> int:
+    """Cost management commands."""
+    from .cost import format_cost_report, set_budget
+
+    sub = getattr(args, "cost_command", None)
+
+    if sub == "report":
+        print(format_cost_report(str(Path.cwd())))
+        return 0
+    elif sub == "budget":
+        amount = args.amount
+        if amount <= 0:
+            print("Budget amount must be positive.")
+            return 1
+        daily = getattr(args, "daily", False)
+        if daily:
+            set_budget(str(Path.cwd()), daily_usd=amount)
+            print(f"  ✓ Daily budget set to ${amount:.2f}")
+        else:
+            set_budget(str(Path.cwd()), session_usd=amount)
+            print(f"  ✓ Session budget set to ${amount:.2f}")
+        return 0
+    elif sub == "reset":
+        from .cost import save_state, load_state
+        state = load_state(str(Path.cwd()))
+        state.pop("session_cost_usd", None)
+        state.pop("input_tokens", None)
+        state.pop("output_tokens", None)
+        save_state(str(Path.cwd()), state)
+        print("  ✓ Session cost counters reset.")
+        return 0
+    else:
+        # Default: show report
+        print(format_cost_report(str(Path.cwd())))
+        return 0
+
+
+# ── Skills Commands ───────────────────────────────────────────────────────────
+
+
+def cmd_skills(args: argparse.Namespace) -> int:
+    """Skills management commands."""
+    from .skills import (
+        create_skill_scaffold,
+        format_skill_list,
+        install_skill,
+        list_all_skills,
+        load_bundled_skills,
+    )
+
+    sub = getattr(args, "skills_command", None)
+
+    if sub == "list":
+        skills = list_all_skills(str(Path.cwd()))
+        print(format_skill_list(skills))
+        return 0
+    elif sub == "install":
+        name = args.name
+        # Check if it's a bundled skill
+        bundled = {s.name: s for s in load_bundled_skills()}
+        if name in bundled:
+            dest = install_skill(bundled[name], str(Path.cwd()))
+            print(f"  ✓ Installed bundled skill '{name}' to {dest}")
+        else:
+            print(f"  Unknown skill '{name}'. Available bundled skills:")
+            for s in bundled.values():
+                print(f"    📦 {s.name}: {s.description}")
+            return 1
+        return 0
+    elif sub == "create":
+        name = args.name
+        dest = create_skill_scaffold(name, str(Path.cwd()))
+        print(f"  ✓ Created skill scaffold at {dest}")
+        print(f"     Edit this file to define your custom skill.")
+        return 0
+    else:
+        # Default: list
+        skills = list_all_skills(str(Path.cwd()))
+        print(format_skill_list(skills))
+        return 0
+
+
+# ── Permissions Commands ──────────────────────────────────────────────────────
+
+
+def cmd_permissions(args: argparse.Namespace) -> int:
+    """Permission policy commands."""
+    from .permissions import apply_policy, format_policy, get_preset, list_presets
+
+    sub = getattr(args, "perm_command", None)
+
+    if sub == "apply":
+        preset_name = args.preset
+        policy = get_preset(preset_name)
+        if not policy:
+            print(f"  Unknown preset '{preset_name}'. Available: {', '.join(list_presets())}")
+            return 1
+        apply_policy(str(Path.cwd()), policy)
+        print(f"  ✓ Applied '{preset_name}' permission policy to .claude/claudeconfig.json")
+        print()
+        print(format_policy(policy))
+        return 0
+    elif sub == "show":
+        presets = list_presets()
+        print(f"\n  ⚖  Permission Presets ({len(presets)} available)\n")
+        for name in presets:
+            policy = get_preset(name)
+            if policy:
+                deny_count = len(policy.deny)
+                allow_count = len(policy.allow)
+                print(f"  📋 {name}: {deny_count} deny, {allow_count} allow rules")
+        print(f"\n  Apply with: tribunal permissions apply <preset>\n")
+        return 0
+    else:
+        # Default: show presets
+        return cmd_permissions(argparse.Namespace(perm_command="show"))
+
+
 # ── Main ──────────────────────────────────────────────────────────────────────
 
 
@@ -323,16 +444,46 @@ def main() -> None:
     audit_p = sub.add_parser("audit", help="Show recent audit log")
     audit_p.add_argument("-n", "--count", type=int, default=20, help="Number of entries")
 
+    # cost
+    cost_p = sub.add_parser("cost", help="Cost tracking and budget management")
+    cost_sub = cost_p.add_subparsers(dest="cost_command")
+    cost_sub.add_parser("report", help="Show cost report")
+    budget_p = cost_sub.add_parser("budget", help="Set cost budget")
+    budget_p.add_argument("amount", type=float, help="Budget amount in USD")
+    budget_p.add_argument("--daily", action="store_true", help="Set as daily budget instead of per-session")
+    cost_sub.add_parser("reset", help="Reset session cost counters")
+
+    # skills
+    skills_p = sub.add_parser("skills", help="Manage Tribunal skills")
+    skills_sub = skills_p.add_subparsers(dest="skills_command")
+    skills_sub.add_parser("list", help="List available skills")
+    install_p = skills_sub.add_parser("install", help="Install a bundled skill")
+    install_p.add_argument("name", help="Skill name to install")
+    create_p = skills_sub.add_parser("create", help="Create a new custom skill")
+    create_p.add_argument("name", help="Name for the new skill")
+
+    # permissions
+    perm_p = sub.add_parser("permissions", help="Manage permission policies")
+    perm_sub = perm_p.add_subparsers(dest="perm_command")
+    perm_sub.add_parser("show", help="Show available permission presets")
+    apply_p = perm_sub.add_parser("apply", help="Apply a permission preset")
+    apply_p.add_argument("preset", help="Preset name: strict, standard, or minimal")
+
     args = parser.parse_args()
 
-    if args.command == "init":
-        sys.exit(cmd_init(args))
-    elif args.command == "status":
-        sys.exit(cmd_status(args))
-    elif args.command == "rules":
-        sys.exit(cmd_rules(args))
-    elif args.command == "audit":
-        sys.exit(cmd_audit(args))
+    commands = {
+        "init": cmd_init,
+        "status": cmd_status,
+        "rules": cmd_rules,
+        "audit": cmd_audit,
+        "cost": cmd_cost,
+        "skills": cmd_skills,
+        "permissions": cmd_permissions,
+    }
+
+    handler = commands.get(args.command)
+    if handler:
+        sys.exit(handler(args))
     else:
         parser.print_help()
         sys.exit(0)

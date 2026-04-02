@@ -4,20 +4,20 @@ const steps = [
   {
     number: "01",
     title: "Install",
-    desc: "Drop tribunal into your project in seconds.",
+    desc: "One command to add quality gates to your project.",
     code: "pip install tribunal && tribunal init",
   },
   {
     number: "02",
-    title: "Code",
-    desc: "Claude Code runs with TDD enforcement and quality hooks active on every session.",
-    code: "# Claude Code now has tribunal gates\n# Write tests first, ship quality code",
+    title: "Check",
+    desc: "Run checkers on your codebase — secrets, TDD, linting — with SARIF output for CI/CD.",
+    code: "$ tribunal ci src/\n\n  ⚖  Tribunal CI — 42 file(s) checked\n\n  ⛔ src/config.py:12\n    Possible secret: aws-access-key\n    [secrets/aws-access-key]\n\n  ⚠️  src/handler.py\n    No test file found. Expected test_handler.py\n    [tdd/missing-test-python]\n\n  ✗ 1 error(s), 1 warning(s)",
   },
   {
     number: "03",
     title: "Ship",
-    desc: "Nothing leaves without passing the spec review. Every change is audited and approved.",
-    code: "✓ Tests pass\n✓ Quality gates clear\n✓ Spec review approved\n→ Ready to ship",
+    desc: "Add to GitHub Actions, pre-commit, or agent hooks. Nothing ships without passing the gate.",
+    code: "# .github/workflows/tribunal.yml\nname: Tribunal CI\non: [pull_request]\njobs:\n  tribunal:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      - uses: thebotclub/tribunal@v2",
   },
 ];
 

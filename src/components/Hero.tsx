@@ -138,8 +138,8 @@ export default function Hero() {
           marginBottom: 24,
           color: "#fff",
         }}>
-          Code that passes<br />
-          <span style={{ color: "#f59e0b" }}>the tribunal.</span>
+          Quality gates for<br />
+          <span style={{ color: "#f59e0b" }}>AI-generated code.</span>
         </h1>
 
         <p style={{
@@ -149,17 +149,17 @@ export default function Hero() {
           maxWidth: 580,
           margin: "0 auto 48px",
         }}>
-          Tribunal enforces TDD, quality gates, and your team&apos;s standards on every Claude Code session.
-          Nothing ships without passing the gate.
+          Tribunal enforces TDD, catches leaked secrets, and runs linting on every AI coding session.
+          Works in CI/CD, pre-commit hooks, and agent hook systems.
         </p>
 
         <div style={{ display: "flex", flexWrap: "wrap", gap: 12, justifyContent: "center" }}>
           <CopyButton text="pip install tribunal" />
-          <CopyButton text="npm install tribunal" />
+          <CopyButton text="tribunal ci ." />
         </div>
 
         <p style={{ marginTop: 24, fontSize: 13, color: "rgba(255,255,255,0.25)" }}>
-          Python CLI + Claude Code plugin · Open source · MIT License
+          Python CLI · GitHub Action · pre-commit · SARIF output · MIT License
         </p>
       </div>
     </section>

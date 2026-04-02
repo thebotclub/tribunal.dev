@@ -8,14 +8,14 @@ const tabs = [
     code: "pip install tribunal",
   },
   {
-    id: "npm",
-    label: "npm",
-    code: "npm install tribunal",
+    id: "action",
+    label: "GitHub Action",
+    code: "# .github/workflows/tribunal.yml\n- uses: thebotclub/tribunal@v2",
   },
   {
-    id: "manual",
-    label: "manual",
-    code: "git clone https://github.com/thebotclub/tribunal.dev\ncd tribunal.dev/tribunal && pip install -e .",
+    id: "precommit",
+    label: "pre-commit",
+    code: "# .pre-commit-config.yaml\nrepos:\n  - repo: https://github.com/thebotclub/tribunal\n    rev: v2.0.0\n    hooks:\n      - id: tribunal-ci",
   },
 ];
 

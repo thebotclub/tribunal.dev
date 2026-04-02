@@ -45,13 +45,7 @@ export default function NavBar() {
           >
             PyPI
           </Link>
-          <Link href="https://www.npmjs.com/package/tribunal" target="_blank" rel="noopener noreferrer"
-            style={{ color: "rgba(255,255,255,0.6)", fontSize: 14, textDecoration: "none", transition: "color 0.2s" }}
-            onMouseEnter={e => (e.currentTarget.style.color = "#fff")}
-            onMouseLeave={e => (e.currentTarget.style.color = "rgba(255,255,255,0.6)")}
-          >
-            npm
-          </Link>
+
           <Link href="https://github.com/thebotclub/tribunal.dev/blob/main/tribunal/README.md" target="_blank" rel="noopener noreferrer"
             style={{ color: "rgba(255,255,255,0.6)", fontSize: 14, textDecoration: "none", transition: "color 0.2s" }}
             onMouseEnter={e => (e.currentTarget.style.color = "#fff")}

@@ -24,11 +24,11 @@ export default function Footer() {
 
         <div style={{ display: "flex", flexWrap: "wrap", gap: 24, alignItems: "center" }}>
           {[
-            { label: "GitHub", href: "https://github.com/thebotclub/tribunal" },
+            { label: "GitHub", href: "https://github.com/thebotclub/tribunal.dev" },
             { label: "npm", href: "https://www.npmjs.com/package/tribunal" },
             { label: "PyPI", href: "https://pypi.org/project/tribunal/" },
-            { label: "Docs", href: "https://github.com/thebotclub/tribunal/blob/main/README.md" },
-            { label: "Privacy", href: "https://github.com/thebotclub/tribunal/blob/main/PRIVACY.md" },
+            { label: "Docs", href: "https://github.com/thebotclub/tribunal.dev/blob/main/tribunal/README.md" },
+            { label: "Privacy", href: "https://github.com/thebotclub/tribunal.dev/blob/main/PRIVACY.md" },
           ].map(link => (
             <Link
               key={link.label}

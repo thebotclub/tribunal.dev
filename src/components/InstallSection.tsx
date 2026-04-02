@@ -15,7 +15,7 @@ const tabs = [
   {
     id: "manual",
     label: "manual",
-    code: "git clone https://github.com/thebotclub/tribunal\ncd tribunal && uv install",
+    code: "git clone https://github.com/thebotclub/tribunal.dev\ncd tribunal.dev/tribunal && pip install -e .",
   },
 ];
 
@@ -119,7 +119,7 @@ export default function InstallSection() {
         </div>
 
         <p style={{ textAlign: "center", marginTop: 24, fontSize: 13, color: "rgba(255,255,255,0.25)" }}>
-          Requires Python 3.10+ or Node.js 18+
+          Requires Python 3.10+
         </p>
       </div>
     </section>

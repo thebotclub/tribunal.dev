@@ -81,7 +81,7 @@ export default function Hero() {
   const [stars, setStars] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch("https://api.github.com/repos/thebotclub/tribunal")
+    fetch("https://api.github.com/repos/thebotclub/tribunal.dev")
       .then(r => r.json())
       .then(d => {
         if (d.stargazers_count !== undefined) {
@@ -98,7 +98,7 @@ export default function Hero() {
       <GridBackground />
       <div style={{ position: "relative", maxWidth: 800, margin: "0 auto", textAlign: "center" }}>
         <a
-          href="https://github.com/thebotclub/tribunal"
+          href="https://github.com/thebotclub/tribunal.dev"
           target="_blank"
           rel="noopener noreferrer"
           style={{

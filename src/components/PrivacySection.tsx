@@ -153,7 +153,7 @@ export default function PrivacySection() {
         <p style={{ textAlign: "center", marginTop: 40, fontSize: 13, color: "rgba(255,255,255,0.3)" }}>
           Full details in{" "}
           <a
-            href="https://github.com/thebotclub/tribunal/blob/main/PRIVACY.md"
+            href="https://github.com/thebotclub/tribunal.dev/blob/main/PRIVACY.md"
             target="_blank"
             rel="noopener noreferrer"
             style={{ color: "#f59e0b", textDecoration: "none" }}

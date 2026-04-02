@@ -31,7 +31,7 @@ export default function NavBar() {
           <span style={{ color: "#fff", fontSize: 16, fontWeight: 600, letterSpacing: "-0.02em" }}>tribunal</span>
         </Link>
         <div style={{ display: "flex", alignItems: "center", gap: 24 }}>
-          <Link href="https://github.com/thebotclub/tribunal" target="_blank" rel="noopener noreferrer"
+          <Link href="https://github.com/thebotclub/tribunal.dev" target="_blank" rel="noopener noreferrer"
             style={{ color: "rgba(255,255,255,0.6)", fontSize: 14, textDecoration: "none", transition: "color 0.2s" }}
             onMouseEnter={e => (e.currentTarget.style.color = "#fff")}
             onMouseLeave={e => (e.currentTarget.style.color = "rgba(255,255,255,0.6)")}
@@ -52,7 +52,7 @@ export default function NavBar() {
           >
             npm
           </Link>
-          <Link href="https://github.com/thebotclub/tribunal/blob/main/README.md" target="_blank" rel="noopener noreferrer"
+          <Link href="https://github.com/thebotclub/tribunal.dev/blob/main/tribunal/README.md" target="_blank" rel="noopener noreferrer"
             style={{ color: "rgba(255,255,255,0.6)", fontSize: 14, textDecoration: "none", transition: "color 0.2s" }}
             onMouseEnter={e => (e.currentTarget.style.color = "#fff")}
             onMouseLeave={e => (e.currentTarget.style.color = "rgba(255,255,255,0.6)")}

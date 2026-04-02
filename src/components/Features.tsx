@@ -41,6 +41,21 @@ const features = [
     title: "Enterprise Ready",
     body: "Managed fleet policies, air-gapped bundles, config schema validation, rule marketplace, and team sync.",
   },
+  {
+    icon: "📦",
+    title: "Rule Packs",
+    body: "Pre-built governance packs — SOC 2, Startup, Enterprise, Security. Install with one command, merge with existing rules.",
+  },
+  {
+    icon: "🔧",
+    title: "SDK & Dashboard",
+    body: "Programmatic Python SDK for custom integrations. Team dashboard API for centralized multi-project governance.",
+  },
+  {
+    icon: "🖥️",
+    title: "VS Code Extension",
+    body: "Visual rule management, live audit viewer, cost dashboard, agent tree, and status bar — right in your editor.",
+  },
 ];
 
 export default function Features() {

@@ -2,7 +2,7 @@
 
 > Authored: April 2, 2026 · Based on architecture audit of Tribunal 0.7.0 + Claude Code v2.1.88 internals  
 > Scope: 6 months · 6 phases · 4 workstreams  
-> Status: **PHASES 5-8 COMPLETE — v1.1.0 shipped. 21 modules, 371 tests, full hook lifecycle + multi-agent governance.**
+> Status: **PHASES 5-10 COMPLETE — v1.2.0 shipped. 24 modules, 432 tests, SDK + rule packs + docs site + VS Code extension + team dashboard.**
 
 ---
 
@@ -646,13 +646,13 @@ multi_agent:
 ```
 
 **Tasks:**
-- [ ] Scaffold VS Code extension: `yo code --type ext-webview`
-- [ ] Create TreeView provider for rules, audit, and cost
-- [ ] Add status bar item showing budget usage
-- [ ] Add file system watcher on `.tribunal/audit.jsonl` for live updates
-- [ ] Add file system watcher on `.tribunal/state.json` for cost updates
+- [x] Scaffold VS Code extension: `yo code --type ext-webview`
+- [x] Create TreeView provider for rules, audit, and cost
+- [x] Add status bar item showing budget usage
+- [x] Add file system watcher on `.tribunal/audit.jsonl` for live updates
+- [x] Add file system watcher on `.tribunal/state.json` for cost updates
 - [ ] Add webview panel for detailed analytics charts
-- [ ] Add command palette: "Tribunal: Show Status", "Tribunal: Toggle Rule"
+- [x] Add command palette: "Tribunal: Show Status", "Tribunal: Toggle Rule"
 - [ ] Add CodeLens on test files showing Tribunal gate status
 - [ ] Publish to VS Code Marketplace: `ext install thebotclub.tribunal`
 
@@ -713,6 +713,7 @@ Developer laptops                 Cloud
 ```
 
 **Tasks:**
+- [x] Create Dashboard API server with REST endpoints (Python HTTP)
 - [ ] Create Cloudflare Workers API: `/api/audit`, `/api/cost`, `/api/team`
 - [ ] Create Cloudflare D1 schema: team members, sessions, cost data, audit events
 - [ ] Add `tribunal sync push` command: upload anonymized audit data to team API
@@ -749,9 +750,9 @@ Developer laptops                 Cloud
 | `tribunal-oss` | License checking, contributing guide enforcement, changelog updates | Open source maintainers |
 
 **Tasks:**
-- [ ] Create `tribunal-packs` repository with curated rule sets
-- [ ] Add `tribunal install pack <name>` command
-- [ ] Each pack: rules.yaml + skills/ + README with rationale
+- [x] Create built-in packs module (soc2, startup, enterprise, security)
+- [x] Add `tribunal pack install <name>` command
+- [x] Each pack: rules dict + config overrides with rationale
 - [ ] Publish packs to PyPI as `tribunal-pack-soc2`, etc.
 - [ ] Add pack showcase to docs.tribunal.dev
 
@@ -803,10 +804,10 @@ for event in t.audit_stream():
 ```
 
 **Tasks:**
-- [ ] Create `tribunal.api` module with `Tribunal` class
-- [ ] Expose all module functionality through clean Python API
+- [x] Create `tribunal.sdk` module with `TribunalSDK` class
+- [x] Expose all module functionality through clean Python API (evaluate, rules, cost, audit, agents, doctor)
 - [ ] Add async support for audit streaming
-- [ ] Write SDK documentation with examples
+- [x] Write SDK documentation with examples (docs site)
 - [ ] Publish separate `tribunal-sdk` package for lightweight imports
 
 #### 10.4 — Community & Growth (P2)

@@ -10,12 +10,12 @@ const tabs = [
   {
     id: "action",
     label: "GitHub Action",
-    code: "# .github/workflows/tribunal.yml\n- uses: thebotclub/tribunal@v2",
+    code: "# .github/workflows/tribunal.yml\n- uses: thebotclub/tribunal.dev/tribunal@v2.0.1",
   },
   {
     id: "precommit",
     label: "pre-commit",
-    code: "# .pre-commit-config.yaml\nrepos:\n  - repo: https://github.com/thebotclub/tribunal\n    rev: v2.0.0\n    hooks:\n      - id: tribunal-ci",
+    code: "# Install once: pip install tribunal\n# .pre-commit-config.yaml\nrepos:\n  - repo: https://github.com/thebotclub/tribunal.dev\n    rev: v2.0.1\n    hooks:\n      - id: tribunal-ci",
   },
 ];
 

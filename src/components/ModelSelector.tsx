@@ -69,8 +69,8 @@ export default function ModelSelector() {
             <div style={{ color: "rgba(255,255,255,0.4)", fontSize: 12, marginBottom: 4 }}>pre-commit hook</div>
             <div style={{ color: "rgba(255,255,255,0.2)", marginBottom: 12 }}>─────────────────────────────</div>
             <div style={{ color: "#e2e8f0" }}>repos:</div>
-            <div style={{ color: "#e2e8f0" }}>{"  "}- repo: https://github.com/thebotclub/tribunal</div>
-            <div style={{ color: "#e2e8f0" }}>{"    "}rev: v2.0.0</div>
+            <div style={{ color: "#e2e8f0" }}>{"  "}- repo: https://github.com/thebotclub/tribunal.dev</div>
+            <div style={{ color: "#e2e8f0" }}>{"    "}rev: v2.0.1</div>
             <div style={{ color: "#e2e8f0" }}>{"    "}hooks:</div>
             <div style={{ color: "#e2e8f0" }}>{"    "}- id: tribunal-ci</div>
             <br />

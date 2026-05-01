@@ -17,7 +17,7 @@ const steps = [
     number: "03",
     title: "Ship",
     desc: "Add to GitHub Actions, pre-commit, or agent hooks. Nothing ships without passing the gate.",
-    code: "# .github/workflows/tribunal.yml\nname: Tribunal CI\non: [pull_request]\njobs:\n  tribunal:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      - uses: thebotclub/tribunal@v2",
+    code: "# .github/workflows/tribunal.yml\nname: Tribunal CI\non: [pull_request]\njobs:\n  tribunal:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      - uses: thebotclub/tribunal.dev/tribunal@v2.0.1",
   },
 ];
 
